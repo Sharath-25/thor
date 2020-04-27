@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.xworkz.cm.dao.LoginDAO;
 import com.xworkz.cm.dto.LoginDTO;
 import com.xworkz.cm.entity.RegisterEntity;
+import com.xworkz.cm.exception.LoginException;
 
 @Component
 public class LoginServiceImpl implements LoginService {
@@ -21,35 +22,42 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
-	public String getRegisterEntity(LoginDTO loginDTO) {
+	public String getRegisterEntity(LoginDTO loginDTO) throws LoginException {
 		System.out.println("invoked getRegisterEntity()");
 		boolean flag = false;
-		RegisterEntity registerEntity = this.loginDAO.getRegisterEntity(loginDTO.getEmail());
-		System.out.println(registerEntity);
-		if (Objects.isNull(registerEntity)) {
-			return "loginFailed";
+		RegisterEntity registerEntity = null;
+		try {
+			registerEntity = this.loginDAO.getRegisterEntity(loginDTO.getEmail());
+			System.out.println(registerEntity);
 
-		}
-		String randomPassword = registerEntity.getRandomPassword();
-		noOfLoginAttempt = registerEntity.getNoOfLoginAttempt();
-		if (noOfLoginAttempt < 3 && noOfLoginAttempt >= 0) {
+			if (Objects.isNull(registerEntity)) {
+				return "loginFailed";
+			}
 
-			if (loginDTO.getRandomPassword().equals(randomPassword)) {
-				System.out.println("password is correct");
-				flag = true;
+			String randomPassword = registerEntity.getRandomPassword();
+			noOfLoginAttempt = registerEntity.getNoOfLoginAttempt();
+			if (noOfLoginAttempt < 3 && noOfLoginAttempt >= 0) {
+
+				if (loginDTO.getRandomPassword().equals(randomPassword)) {
+					System.out.println("password is correct");
+					flag = true;
+				} else {
+					noOfLoginAttempt++;
+					this.loginDAO.updateLoginCount(noOfLoginAttempt, registerEntity.getRegID());
+				}
 			} else {
-				noOfLoginAttempt++;
-				this.loginDAO.updateLoginCount(noOfLoginAttempt, registerEntity.getRegID());
-			}
-		} else {
-			if (noOfLoginAttempt >= 3) {
+				if (noOfLoginAttempt >= 3) {
 
-				return "block";
+					return "block";
+				}
 			}
-		}
 
-		if (flag == true) {
-			return "loginSucess";
+			if (flag == true) {
+				return "loginSucess";
+			}
+		} catch (LoginException e) {
+			e.printStackTrace();
+			throw new LoginException("some problem in login");
 		}
 
 		return "loginFailed";

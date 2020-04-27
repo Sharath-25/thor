@@ -20,7 +20,7 @@ public class RegisterDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
+	@NotNull()
 	@NotEmpty()
 	@Size(min = 4, max = 20)
 	private String userId;
@@ -35,10 +35,11 @@ public class RegisterDTO implements Serializable {
 	private String phone;
 
 	@NotEmpty()
+	@NotNull
 	private String course;
 
-	@NotNull
 	@AssertTrue()
+	@NotNull
 	private Boolean agree;
 
 	public RegisterDTO() {

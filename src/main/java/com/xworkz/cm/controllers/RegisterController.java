@@ -3,16 +3,20 @@ package com.xworkz.cm.controllers;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.xworkz.cm.dto.LoginDTO;
 import com.xworkz.cm.dto.RegisterDTO;
+import com.xworkz.cm.exception.RegisterException;
 import com.xworkz.cm.service.RegisterService;
 
 @Component
@@ -27,6 +31,12 @@ public class RegisterController {
 		System.out.println("Created\t" + this.getClass().getSimpleName());
 	}
 
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+	}
+
 	@GetMapping("/loginpage.do")
 	public String loginpage(@ModelAttribute("loginDTO") LoginDTO loginDTO) {
 		System.out.println("invoked loginpage()");
@@ -37,7 +47,6 @@ public class RegisterController {
 	@GetMapping("/page.do")
 	public String registerPage(@ModelAttribute("registerDTO") RegisterDTO registerDTO, Model model) {
 		System.out.println("Invoked registerPage()");
-		model.addAttribute("registerDTO", new RegisterDTO());
 		return "Register";
 
 	}
@@ -47,21 +56,29 @@ public class RegisterController {
 			Model model) {
 
 		System.out.println("Invoked register()");
+		System.out.println(
+				"if User ID has only white space then it will be trimmed into null |" + register.getUserId() + "|");
+
 		if (result.hasErrors()) {
 			return "Register";
 		}
-		boolean userId = this.registerService.checkUserId(register);
-		if (userId == true) {
-			model.addAttribute("msg", "User Id already exists");
-			return "Register";
+		try {
+			boolean userId = this.registerService.checkUserId(register);
+			if (userId == true) {
+				model.addAttribute("msg", "User Id already exists");
+				return "Register";
+			}
+			boolean checkEmail = this.registerService.checkEmail(register);
+			if (checkEmail == true) {
+				model.addAttribute("msg", "email id already exists");
+				return "Register";
+			}
+			String password = this.registerService.save(register);
+			model.addAttribute("msg", "Registeration is successful and the password is:" + password);
+		} catch (RegisterException e) {
+			e.printStackTrace();
+			throw new RegisterException("some problem occurred in Registeration");
 		}
-		boolean checkEmail = this.registerService.checkEmail(register);
-		if (checkEmail == true) {
-			model.addAttribute("msg", "email id already exists");
-			return "Register";
-		}
-		String password = this.registerService.save(register);
-		model.addAttribute("msg", "Registeration is successful and the password is:" + password);
 		return "Register";
 
 	}

@@ -18,14 +18,14 @@ public class LoginDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@NotEmpty(message = "is Required")
-	@Email(message = "Enter valid emailId")
-	@NotNull(message = "Email cannot be null")
+	@NotEmpty()
+	@Email()
+	@NotNull
 	private String email;
 
-	@NotNull(message = "password cannot be null")
-	@NotEmpty(message = "is Required")
-	@Size(message = "Password must be contain 8 Characters")
+	@NotEmpty()
+	@Size(min = 8, max = 8)
+	@NotNull
 	private String randomPassword;
 
 	public LoginDTO() {

@@ -38,11 +38,11 @@
 	</nav>
 	<br />
 	<br />
-	<br>
-	<br>
 	<div align="center">
+		<h1>${msg}</h1>
+		<br>
 		<h2>Please Sign up for the Course before you join the Course</h2>
-		<h3>Fill up your details</h3>
+		<h3>Registeration Info</h3>
 		<br> <br>
 		<form:form action="register.do" modelAttribute="registerDTO"
 			method="post">
@@ -63,19 +63,14 @@
 			<br>
 			<br>
 			<form:errors path="phone" cssClass="error" />
-			<br>
-			<br>
-
 			<h4>
 				Course Interested
 				<form:select path="course">
+					<form:option value="" label="select" />
 					<form:option value="Development" label="Development" />
 					<form:option value="Testing" label="Testing" />
-
 				</form:select>
-				<br>
 				<form:errors path="course" cssClass="error" />
-				<br> <br>
 			</h4>
 			<br>
 			<h4>
@@ -87,13 +82,11 @@
 				<form:errors path="agree" cssClass="error" />
 				<br>
 			</h4>
-			<hr>
+
 			<input type="submit" value="Register" class="btn btn-primary">
 			<br>
 		</form:form>
 	</div>
-	<h1>${msg}</h1>
-
 	<br />
 	<br>
 	<br>
@@ -104,7 +97,6 @@
 				<a class="navbar-brand" href="#">X-workz-Common Modules</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li><a href="#"></a></li>
 			</ul>
 		</div>
 	</nav>
