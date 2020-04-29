@@ -31,6 +31,12 @@ public class RegisterController {
 		System.out.println("Created\t" + this.getClass().getSimpleName());
 	}
 
+	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
+	public String index() {
+		return "Home";
+
+	}
+
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
 		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);

@@ -24,7 +24,8 @@ import lombok.ToString;
 @NamedQueries({ @NamedQuery(name = "fetchUserId", query = "select u from RegisterEntity u where u.userId=:uID"),
 		@NamedQuery(name = "fetchEmail", query = "select  e from RegisterEntity e where e.email=:email"),
 		@NamedQuery(name = "fetchByEmail", query = "select l from RegisterEntity l where l.email=:email"),
-		@NamedQuery(name = "updateLoginCount", query = "update  RegisterEntity set noOfLoginAttempt=:count where regID=:rid") })
+		@NamedQuery(name = "updateLoginCount", query = "update  RegisterEntity set noOfLoginAttempt=:count where regID=:rid"),
+		@NamedQuery(name = "resetPasswordAndLoginCount", query = "update  RegisterEntity set noOfLoginAttempt=:count, randomPassword=:pwd where regID=:rid") })
 public class RegisterEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

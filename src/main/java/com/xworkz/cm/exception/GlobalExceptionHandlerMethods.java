@@ -20,4 +20,10 @@ public class GlobalExceptionHandlerMethods {
 
 	}
 
+	@ExceptionHandler(value = ForgotPasswordException.class)
+	public String handleForgotPasswordException(ForgotPasswordException e) {
+		return "ForgotPasswordException";
+
+	}
+
 }

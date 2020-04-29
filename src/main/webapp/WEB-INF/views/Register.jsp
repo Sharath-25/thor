@@ -30,8 +30,8 @@
 			</ul>
 			<br>
 			<div align="right">
-				<form action="loginpage.do">
-					<button class="submit" class="btn btn-primary">Login</button>
+				<form action="/common-modules/login/page.do">
+					<button class="submit" class="btn btn-primary">LOGIN</button>
 				</form>
 			</div>
 		</div>
@@ -44,7 +44,7 @@
 		<h2>Please Sign up for the Course before you join the Course</h2>
 		<h3>Registeration Info</h3>
 		<br> <br>
-		<form:form action="register.do" modelAttribute="registerDTO"
+		<form:form action="/common-modules/register/register.do" modelAttribute="registerDTO"
 			method="post">
 		
           User ID<form:input path="userId" />

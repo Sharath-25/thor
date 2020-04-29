@@ -3,6 +3,7 @@ package com.xworkz.cm.service;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.cm.dao.LoginDAO;
@@ -15,6 +16,8 @@ public class LoginServiceImpl implements LoginService {
 	private static Integer noOfLoginAttempt = 0;
 	@Autowired
 	private LoginDAO loginDAO;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public LoginServiceImpl() {
 		super();
@@ -38,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
 			noOfLoginAttempt = registerEntity.getNoOfLoginAttempt();
 			if (noOfLoginAttempt < 3 && noOfLoginAttempt >= 0) {
 
-				if (loginDTO.getRandomPassword().equals(randomPassword)) {
+				if (passwordEncoder.matches(loginDTO.getRandomPassword(), randomPassword)) {
 					System.out.println("password is correct");
 					flag = true;
 				} else {

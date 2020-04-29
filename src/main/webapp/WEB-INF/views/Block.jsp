@@ -27,9 +27,17 @@
 	<br />
 	<br>
 	<br>
+	<br>
+	<br>
 	<div align="center">
 		<h1>${msg}</h1>
+
+		<form action="/common-modules/login/forgotPage.do">
+			<input type="submit" value="RESET YOUR PASSWORD"
+				class="btn btn-primary">
+		</form>
 	</div>
+
 	<br>
 	<nav class="navbar navbar-inverse navbar-fixed-bottom">
 		<div class="container-fluid">

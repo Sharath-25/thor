@@ -19,13 +19,11 @@
 				<a class="navbar-brand" href="#">X-workz-Common Modules</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Home</a></li>
 			</ul>
-			<div align="center">
+			<br>
+			<div align="left">
 				<form action="login/page.do">
-					<br>
 					<button class="submit" class="btn btn-primary">Login</button>
-					<br>
 				</form>
 			</div>
 			<div align="right">
@@ -42,25 +40,18 @@
 		<h1>Welcome to X-workz</h1>
 	</marquee>
 	<p align="right">
-		<img alt="logo" src="images/Logo.png" width="250" height="300"
+		<img alt="logo" src="images/sharathpic.jpg" width="250" height="300"
 			align="left" />
 	<div align="center">
 		<h4>
 			Sharath K<br> <br> Contact: 9731193961<br> <br>
 			Email: Sharathk9525@gmail.com<br> <br> Hands on experience
-			on technologies like JAVA, JEE, Spring, Hibernate.<br>
-			<br> Hands on experience on Web Technologies like HTML, CSS and
-			JavaScript<br>
+			on technologies like JAVA, JEE, Spring, Hibernate.<br> <br>
+			Hands on experience on Web Technologies like HTML, CSS and JavaScript<br>
 			<br> Good understanding about Integration of hibernate with
-			spring framework.<br>
-			<br> Good understanding about Lombok Library.<br><br> Good grip
-			on Eclipse Tool.<br>
-			<br><br> Good understanding about design patterns like Singleton and
-			Prototype.<br> Good knowledge on Spring MVC.<br> <br>Good
-			knowledge on JSP.<br> Good knowledge on Web Server like Apache
-			Tomcat.<br> Good knowledge on JUnit framework.<br>
-			Knowledge on Maven.<br> Knowledge on MySQL Workbench.<br> <br>
-			<br> <br>
+			spring framework.<br> <br> Good understanding about Lombok
+			Library.<br> <br> Good grip on Eclipse Tool.<br> <br>
+			<br>
 		</h4>
 	</div>
 	<nav class="navbar navbar-inverse navbar-fixed-bottom">

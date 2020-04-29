@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.cm.dao.RegisterDAO;
@@ -16,6 +17,8 @@ public class RegisterServiceImpl implements RegisterService {
 
 	@Autowired
 	private RegisterDAO registerDAO;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	private static final int lengthOfThePassword = 8;
 
@@ -24,25 +27,27 @@ public class RegisterServiceImpl implements RegisterService {
 		System.out.println("Created\t" + this.getClass().getSimpleName());
 
 	}
+
 	@Override
 	public String save(RegisterDTO registerDTO) throws RegisterException {
-		String password = null;
-
+		String randomPassword = null;
 		try {
 			RegisterEntity registerEntity = new RegisterEntity();
-			String randomPassword = RegisterServiceImpl.generateRandomPassword(lengthOfThePassword);
+			randomPassword = RegisterServiceImpl.generateRandomPassword(lengthOfThePassword);
 			System.out.println("random password is:" + randomPassword);
-			registerEntity.setRandomPassword(randomPassword);
+			String encodedPassword = this.passwordEncoder.encode(randomPassword);
+			System.out.println("encrypted password is:" + encodedPassword);
+			registerEntity.setRandomPassword(encodedPassword);
 			registerEntity.setNoOfLoginAttempt(0);
 			BeanUtils.copyProperties(registerDTO, registerEntity);
-			password = this.registerDAO.save(registerEntity);
+			this.registerDAO.save(registerEntity);
 
 		} catch (RegisterException e) {
 			e.printStackTrace();
 			throw new RegisterException("some problem occurred in saving operation");
 
 		}
-		return password;
+		return randomPassword;
 	}
 
 	@Override

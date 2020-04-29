@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.xworkz.cm.dto.ForgotPasswordDTO;
 import com.xworkz.cm.dto.LoginDTO;
 import com.xworkz.cm.dto.RegisterDTO;
 import com.xworkz.cm.exception.LoginException;
@@ -27,7 +28,6 @@ public class LoginController {
 	private LoginService loginService;
 
 	public LoginController() {
-		super();
 		System.out.println("Created\t" + this.getClass().getSimpleName());
 	}
 
@@ -35,6 +35,13 @@ public class LoginController {
 	public void initBinder(WebDataBinder dataBinder) {
 		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
 		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+	}
+
+	@RequestMapping("/forgotPage.do")
+	public String forgotPasswordPage(@ModelAttribute("forgotPasswordDTO") ForgotPasswordDTO forgotPasswordDTO) {
+		System.out.println("invoked forgotPasswordPage()");
+		return "ForgotPassword";
+
 	}
 
 	@GetMapping("/registerpage.do")
@@ -67,7 +74,7 @@ public class LoginController {
 
 			} else if (valid.equals("block")) {
 				model.addAttribute("msg",
-						"Password Tries Exceeded.Your account has been blocked due to Wrong password, have patience till I Develop forgotPassword module.");
+						"Password Tries Exceeded.Your account has been blocked due to Wrong password.");
 				return "Block";
 			}
 			model.addAttribute("msg", "LOGIN is Successful...Have a good day");
