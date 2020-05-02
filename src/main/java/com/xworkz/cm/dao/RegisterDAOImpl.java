@@ -2,6 +2,7 @@ package com.xworkz.cm.dao;
 
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,13 +18,16 @@ public class RegisterDAOImpl implements RegisterDAO {
 	@Autowired
 	private SessionFactory factory;
 
+	private static final Logger logger = Logger.getLogger(RegisterDAOImpl.class);
+
 	public RegisterDAOImpl() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 	@Override
 	public String save(RegisterEntity registerEntity) {
+		logger.info(" register save method is invoked");
 		Session session = null;
 		try {
 			session = factory.openSession();
@@ -33,12 +37,13 @@ public class RegisterDAOImpl implements RegisterDAO {
 
 		} catch (HibernateException e) {
 			session.getTransaction().rollback();
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();
+				logger.info("Session is closed");
 			} else {
-				System.out.println("Session not closed");
+				logger.info("session is not closed");
 			}
 		}
 		return registerEntity.getRandomPassword();
@@ -48,7 +53,7 @@ public class RegisterDAOImpl implements RegisterDAO {
 	@Override
 	public String checkUserId(RegisterEntity registerEntity) {
 		Session session = null;
-		System.out.println("inside DAOIMPL" + registerEntity);
+		logger.info("inside DAOIMPL checkUserId()" + registerEntity);
 		try {
 			session = factory.openSession();
 			Query namedQuery = session.getNamedQuery("fetchUserId");
@@ -67,12 +72,13 @@ public class RegisterDAOImpl implements RegisterDAO {
 			}
 
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();
+				logger.info("Session is closed");
 			} else {
-				System.out.println("Session not closed");
+				logger.info("Session is not closed");
 			}
 		}
 
@@ -83,7 +89,7 @@ public class RegisterDAOImpl implements RegisterDAO {
 	@Override
 	public String checkEmail(RegisterEntity registerEntity) {
 		Session session = null;
-		System.out.println("inside DAOIMPL" + registerEntity);
+		logger.info("inside DAOIMPL checkEmail()" + registerEntity);
 		try {
 			session = factory.openSession();
 			Query namedQuery = session.getNamedQuery("fetchEmail");
@@ -102,12 +108,13 @@ public class RegisterDAOImpl implements RegisterDAO {
 			}
 
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();
+				logger.info("Session is closed");
 			} else {
-				System.out.println("Session not closed");
+				logger.info("Session is not closed");
 			}
 		}
 

@@ -2,6 +2,7 @@ package com.xworkz.cm.dao;
 
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,15 +18,17 @@ public class LoginDAOImpl implements LoginDAO {
 	@Autowired
 	private SessionFactory factory;
 
+	private static final Logger logger = Logger.getLogger(LoginDAOImpl.class);
+
 	public LoginDAOImpl() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public RegisterEntity getRegisterEntity(String email) {
-		System.out.println("Invoked DAO()");
+		logger.info("invoked LoginDAOImpl  getRegisterEntity()");
 		Session session = null;
 		RegisterEntity registerEntity = null;
 
@@ -42,13 +45,13 @@ public class LoginDAOImpl implements LoginDAO {
 			}
 
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
-				System.out.println("Session is closed");
+				logger.info("Session is closed");
 				session.close();
 			} else {
-				System.out.println("Session is not closed");
+				logger.info("Session is not closed");
 			}
 		}
 		return registerEntity;
@@ -57,7 +60,8 @@ public class LoginDAOImpl implements LoginDAO {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Integer updateLoginCount(Integer noOfLoginAttempt, Integer regID) {
-		System.out.println("Invoked updateLoginCount()");
+		logger.info("Invoked updateLoginCount()");
+
 		Session session = null;
 		Integer update = 0;
 		try {
@@ -68,17 +72,17 @@ public class LoginDAOImpl implements LoginDAO {
 			namedQuery.setParameter("rid", regID);
 			update = namedQuery.executeUpdate();
 			session.getTransaction().commit();
-			System.out.println("login count is updated");
+			logger.info("login count is updated");
 
 		} catch (HibernateException e) {
 			session.getTransaction().rollback();
-			e.printStackTrace();
+			logger.info(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
-				System.out.println("Session is closed");
 				session.close();
+				logger.info("Session is closed");
 			} else {
-				System.out.println("Session is not closed");
+				logger.info("Session is not closeds");
 			}
 		}
 		return update;

@@ -10,7 +10,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +30,8 @@ import lombok.ToString;
 		@NamedQuery(name = "resetPasswordAndLoginCount", query = "update  RegisterEntity set noOfLoginAttempt=:count, randomPassword=:pwd where regID=:rid") })
 public class RegisterEntity implements Serializable {
 
+	private static final Logger logger = Logger.getLogger(RegisterEntity.class);
+	
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GenericGenerator(name = "auto", strategy = "increment")
@@ -58,7 +62,7 @@ public class RegisterEntity implements Serializable {
 
 	public RegisterEntity() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 }

@@ -2,6 +2,7 @@ package com.xworkz.cm.controllers;
 
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Component;
@@ -25,9 +26,11 @@ public class ForgotPasswordController {
 	@Autowired
 	private ForgotPasswordService forgotPasswordService;
 
+	private static final Logger logger = Logger.getLogger(ForgotPasswordController.class);
+
 	public ForgotPasswordController() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t object created");
 	}
 
 	@InitBinder
@@ -38,7 +41,7 @@ public class ForgotPasswordController {
 
 	@GetMapping("/forgotPage.do")
 	public String forgotPasswordPage(@ModelAttribute("forgotPasswordDTO") ForgotPasswordDTO forgotPasswordDTO) {
-		System.out.println("invoked forgotPasswordPage()");
+		logger.info("invoked forgotPasswordPage()");
 		return "ForgotPassword";
 
 	}
@@ -46,7 +49,7 @@ public class ForgotPasswordController {
 	@RequestMapping(value = "/resetPassword.do", method = RequestMethod.POST)
 	public String resetPassword(@Valid @ModelAttribute("forgotPasswordDTO") ForgotPasswordDTO forgotPasswordDTO,
 			BindingResult result, Model model) {
-		System.out.println("invoked resetPassword()");
+		logger.info("invoked resetPassword()");
 		try {
 			if (result.hasErrors()) {
 				return "ForgotPassword";
@@ -58,7 +61,7 @@ public class ForgotPasswordController {
 			}
 			model.addAttribute("message", "New password is :" + checkEmail + "  use this password to login again");
 		} catch (ForgotPasswordException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new ForgotPasswordException(
 					"some problem occurred in resetting password " + this.getClass().getSimpleName());
 		}

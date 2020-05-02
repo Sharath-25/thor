@@ -2,6 +2,7 @@ package com.xworkz.cm.service;
 
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,19 +20,21 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	private static final Logger logger = Logger.getLogger(LoginServiceImpl.class);
+
 	public LoginServiceImpl() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 	@Override
 	public String getRegisterEntity(LoginDTO loginDTO) throws LoginException {
-		System.out.println("invoked getRegisterEntity()");
+		logger.info("invoked LoginServiceImpl getRegisterEntity()");
 		boolean flag = false;
 		RegisterEntity registerEntity = null;
 		try {
 			registerEntity = this.loginDAO.getRegisterEntity(loginDTO.getEmail());
-			System.out.println(registerEntity);
+			logger.info(registerEntity.toString());
 
 			if (Objects.isNull(registerEntity)) {
 				return "loginFailed";
@@ -42,7 +45,7 @@ public class LoginServiceImpl implements LoginService {
 			if (noOfLoginAttempt < 3 && noOfLoginAttempt >= 0) {
 
 				if (passwordEncoder.matches(loginDTO.getRandomPassword(), randomPassword)) {
-					System.out.println("password is correct");
+					logger.info("password is correct");
 					flag = true;
 				} else {
 					noOfLoginAttempt++;
@@ -59,7 +62,7 @@ public class LoginServiceImpl implements LoginService {
 				return "loginSucess";
 			}
 		} catch (LoginException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new LoginException("some problem in login");
 		}
 

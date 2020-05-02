@@ -3,6 +3,7 @@ package com.xworkz.cm.service;
 import java.security.SecureRandom;
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,8 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	@Autowired
 	private ForgotPasswordDAO forgotPasswordDAO;
 
+	private static final Logger logger = Logger.getLogger(ForgotPasswordServiceImpl.class);
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -24,12 +27,12 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
 	public ForgotPasswordServiceImpl() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 	@Override
 	public String getEmail(String email) {
-		System.out.println("Invoked getEmail() in service");
+		logger.info(" invoked ForgotPasswordServiceImpl getEmail()");
 		String resetPassword = "";
 		try {
 			RegisterEntity registerEntity = this.forgotPasswordDAO.getEmail(email);
@@ -46,6 +49,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 				return resetPassword;
 			}
 		} catch (ForgotPasswordException e) {
+			logger.error(e.getMessage(), e);
 			throw new ForgotPasswordException("some problem occurred in serviceImpl");
 		}
 

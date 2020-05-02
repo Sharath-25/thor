@@ -2,6 +2,7 @@ package com.xworkz.cm.service;
 
 import java.security.SecureRandom;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,30 +21,33 @@ public class RegisterServiceImpl implements RegisterService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	private static final Logger logger = Logger.getLogger(RegisterServiceImpl.class);
+
 	private static final int lengthOfThePassword = 8;
 
 	public RegisterServiceImpl() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 
 	}
 
 	@Override
 	public String save(RegisterDTO registerDTO) throws RegisterException {
+		logger.info("invoked RegisterServiceImpl save()");
 		String randomPassword = null;
 		try {
 			RegisterEntity registerEntity = new RegisterEntity();
 			randomPassword = RegisterServiceImpl.generateRandomPassword(lengthOfThePassword);
-			System.out.println("random password is:" + randomPassword);
+			logger.info("random password is:" + randomPassword);
 			String encodedPassword = this.passwordEncoder.encode(randomPassword);
-			System.out.println("encrypted password is:" + encodedPassword);
+			logger.info("encrypted password is:" + encodedPassword);
 			registerEntity.setRandomPassword(encodedPassword);
 			registerEntity.setNoOfLoginAttempt(0);
 			BeanUtils.copyProperties(registerDTO, registerEntity);
 			this.registerDAO.save(registerEntity);
 
 		} catch (RegisterException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new RegisterException("some problem occurred in saving operation");
 
 		}
@@ -52,6 +56,7 @@ public class RegisterServiceImpl implements RegisterService {
 
 	@Override
 	public boolean checkUserId(RegisterDTO registerDTO) throws RegisterException {
+		logger.info("invoked RegisterServiceImpl checkUserId()");
 		boolean flag = false;
 		try {
 			RegisterEntity registerEntity = new RegisterEntity();
@@ -63,7 +68,7 @@ public class RegisterServiceImpl implements RegisterService {
 				flag = true;
 			}
 		} catch (RegisterException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new RegisterException("some problem occurred in checking USER-ID");
 		}
 		return flag;
@@ -76,14 +81,14 @@ public class RegisterServiceImpl implements RegisterService {
 			RegisterEntity registerEntity = new RegisterEntity();
 			BeanUtils.copyProperties(registerDTO, registerEntity);
 			String email = this.registerDAO.checkEmail(registerEntity);
-			System.out.println("mail" + email);
+			logger.info("email found" + email);
 			if (email.equals("dataNotFound")) {
 				flag = false;
 			} else {
 				flag = true;
 			}
 		} catch (RegisterException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new RegisterException("some problem occurred in checking an Email");
 		}
 		return flag;

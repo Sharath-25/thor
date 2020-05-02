@@ -2,6 +2,7 @@ package com.xworkz.cm.controllers;
 
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Component;
@@ -25,10 +26,12 @@ public class RegisterController {
 
 	@Autowired
 	private RegisterService registerService;
+	
+	private static final Logger logger = Logger.getLogger(RegisterController.class);
 
 	public RegisterController() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
@@ -45,14 +48,14 @@ public class RegisterController {
 
 	@GetMapping("/loginpage.do")
 	public String loginpage(@ModelAttribute("loginDTO") LoginDTO loginDTO) {
-		System.out.println("invoked loginpage()");
+		logger.info("invoked loginpage()");
 		return "Login";
 
 	}
 
 	@GetMapping("/page.do")
 	public String registerPage(@ModelAttribute("registerDTO") RegisterDTO registerDTO, Model model) {
-		System.out.println("Invoked registerPage()");
+		logger.info("Invoked registerPage()");
 		return "Register";
 
 	}
@@ -61,9 +64,8 @@ public class RegisterController {
 	public String register(@Valid @ModelAttribute("registerDTO") RegisterDTO register, BindingResult result,
 			Model model) {
 
-		System.out.println("Invoked register()");
-		System.out.println(
-				"if User ID has only white space then it will be trimmed into null |" + register.getUserId() + "|");
+		logger.info("Invoked registerPage()");
+		logger.info("if User ID has only white space then it will be trimmed into null |" + register.getUserId() + "|");
 
 		if (result.hasErrors()) {
 			return "Register";
@@ -81,8 +83,9 @@ public class RegisterController {
 			}
 			String password = this.registerService.save(register);
 			model.addAttribute("msg", "Registeration is successful and the password is:" + password);
+		
 		} catch (RegisterException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new RegisterException("some problem occurred in Registeration");
 		}
 		return "Register";

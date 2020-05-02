@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.log4j.Logger;
+
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,6 +22,7 @@ import lombok.ToString;
 public class RegisterDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(RegisterDTO.class);
 
 	@NotNull()
 	@NotEmpty()
@@ -44,7 +48,7 @@ public class RegisterDTO implements Serializable {
 
 	public RegisterDTO() {
 		super();
-		System.out.println("Created\t" + this.getClass().getSimpleName());
+		logger.info(this.getClass().getSimpleName() + "\t Object Created");
 	}
 
 }
