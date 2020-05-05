@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
 	@Autowired
 	private ForgotPasswordDAO forgotPasswordDAO;
+
+	@Autowired
+	private MailSender mailSender;
 
 	private static final Logger logger = Logger.getLogger(ForgotPasswordServiceImpl.class);
 
@@ -31,29 +36,37 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	}
 
 	@Override
-	public String getEmail(String email) {
+	public boolean getEmail(String email) {
+		boolean flag = false;
 		logger.info(" invoked ForgotPasswordServiceImpl getEmail()");
 		String resetPassword = "";
 		try {
 			RegisterEntity registerEntity = this.forgotPasswordDAO.getEmail(email);
 			if (Objects.isNull(registerEntity)) {
-				return "noEmail";
+				return flag;
 			}
 			resetPassword = generateRandomPassword(lengthOfThePassword);
 			String encodedPassword = passwordEncoder.encode(resetPassword);
 			registerEntity.setRandomPassword(encodedPassword);
 			registerEntity.setNoOfLoginAttempt(0);
-			int reset = this.forgotPasswordDAO.resetPasswordAndLoginCount(registerEntity.getNoOfLoginAttempt(),
+			boolean valid = this.forgotPasswordDAO.resetPasswordAndLoginCount(registerEntity.getNoOfLoginAttempt(),
 					registerEntity.getRandomPassword(), registerEntity.getRegID());
-			if (reset == 1) {
-				return resetPassword;
+			if (valid == true) {
+				flag = true;
+				SimpleMailMessage mailMessage = new SimpleMailMessage();
+				mailMessage.setTo(email);
+				mailMessage.setSubject("Regarding re-setting the password");
+				mailMessage.setText("re-setting password is successful and your new password is:" + resetPassword
+						+ "\t use this password to login. Thank you");
+				mailSender.send(mailMessage);
+				return flag;
 			}
 		} catch (ForgotPasswordException e) {
 			logger.error(e.getMessage(), e);
 			throw new ForgotPasswordException("some problem occurred in serviceImpl");
 		}
 
-		return resetPassword;
+		return flag;
 	}
 
 	public static String generateRandomPassword(int len) {

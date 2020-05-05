@@ -26,7 +26,7 @@ public class RegisterController {
 
 	@Autowired
 	private RegisterService registerService;
-	
+
 	private static final Logger logger = Logger.getLogger(RegisterController.class);
 
 	public RegisterController() {
@@ -81,14 +81,20 @@ public class RegisterController {
 				model.addAttribute("msg", "email id already exists");
 				return "Register";
 			}
-			String password = this.registerService.save(register);
-			model.addAttribute("msg", "Registeration is successful and the password is:" + password);
-		
+			boolean valid = this.registerService.save(register);
+			if (valid == true) {
+				model.addAttribute("msg",
+						"Registeration is successful and your password has been sent to this E-mail ID"
+								+ register.getEmail() + ",\t kindly check out your inbox");
+				return "Register";
+			}
+			model.addAttribute("msg", "some problem occurred in Registeration.please try again");
+			return "Register";
+
 		} catch (RegisterException e) {
 			logger.error(e.getMessage(), e);
 			throw new RegisterException("some problem occurred in Registeration");
 		}
-		return "Register";
 
 	}
 }

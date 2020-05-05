@@ -5,6 +5,8 @@ import java.security.SecureRandom;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,9 @@ public class RegisterServiceImpl implements RegisterService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private MailSender mailSender;
+
 	private static final Logger logger = Logger.getLogger(RegisterServiceImpl.class);
 
 	private static final int lengthOfThePassword = 8;
@@ -32,8 +37,10 @@ public class RegisterServiceImpl implements RegisterService {
 	}
 
 	@Override
-	public String save(RegisterDTO registerDTO) throws RegisterException {
+	public boolean save(RegisterDTO registerDTO) throws RegisterException {
+		boolean flag = false;
 		logger.info("invoked RegisterServiceImpl save()");
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		String randomPassword = null;
 		try {
 			RegisterEntity registerEntity = new RegisterEntity();
@@ -44,14 +51,27 @@ public class RegisterServiceImpl implements RegisterService {
 			registerEntity.setRandomPassword(encodedPassword);
 			registerEntity.setNoOfLoginAttempt(0);
 			BeanUtils.copyProperties(registerDTO, registerEntity);
-			this.registerDAO.save(registerEntity);
+			String savedPassword = this.registerDAO.save(registerEntity);
+			logger.info("Registeration is successful and all the details got saved into Database");
+			if (passwordEncoder.matches(randomPassword, savedPassword)) {
+				flag = true;
+				logger.info("E-mail sending started");
+				mailMessage.setTo(registerDTO.getEmail());
+				mailMessage.setSubject("Regarding Registeration and password");
+				mailMessage.setText("Registeration is successful and your password is:" + randomPassword
+						+ "\t do not share your password with anyone.Thank you");
+				mailSender.send(mailMessage);
+				logger.info("E-mail Sending is successful");
+				return flag;
+			}
 
 		} catch (RegisterException e) {
 			logger.error(e.getMessage(), e);
 			throw new RegisterException("some problem occurred in saving operation");
 
 		}
-		return randomPassword;
+		return flag;
+
 	}
 
 	@Override

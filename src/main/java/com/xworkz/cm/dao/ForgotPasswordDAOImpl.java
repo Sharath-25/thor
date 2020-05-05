@@ -58,8 +58,9 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public int resetPasswordAndLoginCount(int noOfLoginAttempt, String resetPassword, int rID) {
+	public boolean resetPasswordAndLoginCount(int noOfLoginAttempt, String resetPassword, int rID) {
 		logger.info("invoked resetPasswordAndLoginCount()");
+		boolean flag = false;
 		Session session = null;
 		int numberOfEntities = 0;
 		try {
@@ -72,7 +73,9 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 			numberOfEntities = namedQuery.executeUpdate();
 			session.getTransaction().commit();
 			if (numberOfEntities == 1) {
-				return numberOfEntities;
+				flag = true;
+				logger.info("password resetting is done");
+				return flag;
 			}
 
 		} catch (ForgotPasswordException e) {
@@ -90,7 +93,7 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 			}
 		}
 
-		return numberOfEntities;
+		return flag;
 	}
 
 }

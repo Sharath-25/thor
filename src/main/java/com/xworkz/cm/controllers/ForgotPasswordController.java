@@ -54,12 +54,14 @@ public class ForgotPasswordController {
 			if (result.hasErrors()) {
 				return "ForgotPassword";
 			}
-			String checkEmail = this.forgotPasswordService.getEmail(forgotPasswordDTO.getEmail());
-			if (checkEmail.equalsIgnoreCase("noEmail")) {
+			boolean valid = this.forgotPasswordService.getEmail(forgotPasswordDTO.getEmail());
+			if (valid == false) {
 				model.addAttribute("message", "this email Id does not exist");
 				return "ForgotPassword";
 			}
-			model.addAttribute("message", "New password is :" + checkEmail + "  use this password to login again");
+			model.addAttribute("message",
+					"re-setting password is successful and your new password has been sent to this E-Mail ID: "
+							+ forgotPasswordDTO.getEmail());
 		} catch (ForgotPasswordException e) {
 			logger.error(e.getMessage(), e);
 			throw new ForgotPasswordException(
